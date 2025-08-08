@@ -1,0 +1,22 @@
+{
+  "outfits": [
+    {
+      "id": "shirt_001",
+      "outfitName": "화이트 티셔츠",
+      "type": "Top",
+      "topCategory": "Tshirt",
+      "slotName": "Chest",
+      "thumbnailUrl": "https://example.com/thumbnails/shirt1.jpg",
+      "raceName": "HumanMale"
+    },
+    {
+      "id": "pants_001",
+      "outfitName": "바지",
+      "type": "Bottom",
+      "topCategory": "Pants",
+      "slotName": "Legs",
+      "thumbnailUrl": "https://example.com/thumbnails/pants1.jpg",
+      "raceName": "HumanMale"
+    }
+  ]
+}

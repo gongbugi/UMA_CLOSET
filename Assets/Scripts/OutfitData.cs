@@ -31,8 +31,9 @@ public class OutfitData : ScriptableObject
     public Sprite thumbnail; // 의상 썸네일 이미지
 
     [Header("UMA Recipe")]
+    public string texturePath; // Resources 폴더 기준 텍스처 경로
+    public string overlayName; // 텍스처를 적용할 오버레이 이름
     public string slotName; // 예: "Torso", "Legs"
-    public string overlayName; // 예: "MaleShirt01_Overlay", "MaleJeans01_Overlay"
     public string raceName; // 예: "HumanMale", "HumanFemale" (필요한 경우)
 
 

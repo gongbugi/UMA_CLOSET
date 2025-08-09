@@ -16,6 +16,7 @@ public class OutfitJsonData
     public string overlayName;
     public string thumbnailUrl;
     public string raceName;
+    public string texturePath; // 텍스처 경로
 }
 
 [Serializable]
@@ -132,6 +133,7 @@ public class OutfitDataLoader : MonoBehaviour
         outfitData.slotName = jsonData.slotName;
         outfitData.overlayName = jsonData.overlayName;
         outfitData.raceName = jsonData.raceName;
+        outfitData.texturePath = jsonData.texturePath;
         
         // ClothingType enum 변환
         if (Enum.TryParse<ClothingType>(jsonData.type, out ClothingType clothingType))

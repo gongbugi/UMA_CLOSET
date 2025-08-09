@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.EventSystems;
 using TMPro;
+using UMA;
+using UMA.CharacterSystem;
 
 public class WardrobeManager : MonoBehaviour
 {
@@ -34,6 +36,7 @@ public class WardrobeManager : MonoBehaviour
     private Button currentSelectedMainButton;
     private Button currentSelectedSubButton;
     private List<OutfitData> currentFilteredList;
+    private UMA.CharacterSystem.DynamicCharacterAvatar avatar;
 
     void Awake()
     {
@@ -48,6 +51,13 @@ public class WardrobeManager : MonoBehaviour
 
     void Start()
     {
+        // 씬에서 UMA 아바타를 찾습니다. (최신 API 사용)
+        avatar = FindFirstObjectByType<UMA.CharacterSystem.DynamicCharacterAvatar>();
+        if (avatar == null)
+        {
+            Debug.LogError("씬에서 DynamicCharacterAvatar를 찾을 수 없습니다!");
+        }
+
         topSubCategoryPanel.SetActive(false);
         bottomSubCategoryPanel.SetActive(false);
 
@@ -197,18 +207,114 @@ public class WardrobeManager : MonoBehaviour
         PopulateWardrobeUI(filtered, ClothingType.Bottom);
     }
 
+
     public void ChangeOutfitByIndex(int index)
     {
-        // 옷 입히기 기능 제거됨
+        OutfitData selectedOutfit = currentFilteredList[index];
+        string recipePath = GetRecipePathByConvention(selectedOutfit); // "Custom/Tshirt_Recipe"
+        string overlayPath = GetOverlayPathByConvention(selectedOutfit); // "Custom/Tshirt_Overlay"
+
+        // 1. Resources에서 레시피 에셋을 로드
+        var recipe = Resources.Load<UMAWardrobeRecipe>(recipePath);
+
+        avatar.SetSlot(recipe);
+
+        // 2. 레시피의 텍스처를 교체
+        if (!string.IsNullOrEmpty(selectedOutfit.texturePath))
+        {
+            var texture = Resources.Load<Texture2D>(selectedOutfit.texturePath);
+            if (texture != null)
+            {
+                ApplyTextureToRecipe(recipe, overlayPath, texture);
+            }
+            else
+            {
+                Debug.LogError($"텍스처 로드 실패: {selectedOutfit.texturePath}");
+            }
+        }
+
+        // 3. 최종적으로 수정이 완료된 레시피를 아바타에 적용하고 빌드
+        avatar.BuildCharacter();
+        Debug.Log($"'{selectedOutfit.outfitName}' 착용 완료!");
+    }
+
+
+    // 오버레이의 텍스처를 교체하는 함수
+    void ApplyTextureToRecipe(UMAWardrobeRecipe recipe, string overlayPath, Texture2D texture)
+    {
+        var overlayAsset = Resources.Load<OverlayDataAsset>(overlayPath);
+
+        if (overlayAsset != null)
+        {
+            overlayAsset.textureList[0] = texture;
+            Debug.Log($"'${overlayAsset.overlayName}' 오버레이의 텍스처를 성공적으로 교체했습니다.");
+        }
+        else
+        {
+            Debug.LogWarning($"레시피 '{recipe.name}'의 슬롯에서 오버레이를 찾지 못했습니다.");
+        }
+    }
+
+
+    private string GetRecipePathByConvention(OutfitData outfit)
+    {
+        if (outfit.type == ClothingType.Top && outfit.topCategory == TopCategory.Tshirt)
+        {
+            return "Custom/Tshirt_Recipe";
+        }
+
+        // 여기에 다른 의상 종류에 대한 규칙을 추가할 수 있습니다.
+        // 예: if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Pants)
+        //     return "Custom/Pants_Recipe";
+
+        return null; // 규칙에 맞는 레시피가 없는 경우
+    }
+
+    private string GetOverlayPathByConvention(OutfitData outfit)
+    {
+        if (outfit.type == ClothingType.Top && outfit.topCategory == TopCategory.Tshirt)
+        {
+            return "Custom/Tshirt_Overlay";
+        }
+
+        // 여기에 다른 의상 종류에 대한 규칙을 추가할 수 있습니다.
+        // 예: if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Pants)
+        //     return "Custom/Pants_Overlay";
+
+        return null; // 규칙에 맞는 레시피가 없는 경우
     }
 
     public void UnequipAllOutfits()
     {
-        Debug.Log("전체 옷 해제 버튼이 눌렸습니다.");
+        if (avatar == null) return;
+
+        avatar.ClearSlot("Chest");
+        avatar.ClearSlot("Legs");
+        avatar.BuildCharacter();
+        Debug.Log("모든 의상을 해제했습니다.");
     }
 
     public void UnequipOutfitByCategory(ClothingType type)
     {
-        Debug.Log($"{type} 카테고리 옷 해제 버튼이 눌렸습니다.");
+        if (avatar == null) return;
+
+        string slotToClear = "";
+        switch (type)
+        {
+            case ClothingType.Top:
+                slotToClear = "Chest";
+                break;
+            case ClothingType.Bottom:
+                slotToClear = "Legs";
+                break;
+        }
+
+        if (!string.IsNullOrEmpty(slotToClear))
+        {
+            avatar.ClearSlot(slotToClear);
+            avatar.BuildCharacter();
+            Debug.Log($"{type} 카테고리 의상을 해제했습니다.");
+        }
     }
+
 }

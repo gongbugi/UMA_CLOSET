@@ -222,6 +222,7 @@ public class WardrobeManager : MonoBehaviour
         // 2. 레시피의 텍스처를 교체
         if (!string.IsNullOrEmpty(selectedOutfit.texturePath))
         {
+            // WebGL에서는 서버에서 텍스처 로드
             var texture = Resources.Load<Texture2D>(selectedOutfit.texturePath);
             if (texture != null)
             {
@@ -262,10 +263,18 @@ public class WardrobeManager : MonoBehaviour
         {
             return "Custom/Tshirt_Recipe";
         }
-
-        // 여기에 다른 의상 종류에 대한 규칙을 추가할 수 있습니다.
-        // 예: if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Pants)
-        //     return "Custom/Pants_Recipe";
+        if (outfit.type == ClothingType.Top && outfit.topCategory == TopCategory.Shirt)
+        {
+            return "Custom/Shirt_Recipe";
+        }
+        if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Pants)
+        {
+            return "Custom/Pants_Recipe";
+        }
+        if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Shorts)
+        {
+            return "Custom/Shorts_Recipe";
+        }
 
         return null; // 규칙에 맞는 레시피가 없는 경우
     }
@@ -276,11 +285,18 @@ public class WardrobeManager : MonoBehaviour
         {
             return "Custom/Tshirt_Overlay";
         }
-
-        // 여기에 다른 의상 종류에 대한 규칙을 추가할 수 있습니다.
-        // 예: if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Pants)
-        //     return "Custom/Pants_Overlay";
-
+        if (outfit.type == ClothingType.Top && outfit.topCategory == TopCategory.Shirt)
+        {
+            return "Custom/Shirt_Overlay";
+        }
+        if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Pants)
+        {
+            return "custom/Pants_Overlay";
+        }
+        if (outfit.type == ClothingType.Bottom && outfit.bottomCategory == BottomCategory.Shorts)
+        {
+            return "Custom/Shorts_Overlay";
+        }
         return null; // 규칙에 맞는 레시피가 없는 경우
     }
 

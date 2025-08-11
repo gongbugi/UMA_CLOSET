@@ -47,6 +47,12 @@ public class WardrobeManager : MonoBehaviour
         {
             OutfitDataLoader.Instance.OnOutfitsLoaded += OnOutfitsLoadedFromJson;
         }
+        
+        // BodyMeasurements의 이벤트에 구독
+        if (BodyMeasurements.Instance != null)
+        {
+            BodyMeasurements.Instance.OnMeasurementsLoaded += OnBodyMeasurementsLoaded;
+        }
     }
 
     void Start()
@@ -74,6 +80,16 @@ public class WardrobeManager : MonoBehaviour
         {
             Debug.LogError("OutfitDataLoader Instance가 없습니다. OutfitDataLoader를 씬에 추가해주세요.");
         }
+        
+        // 신체 측정 데이터 로드 시작
+        if (BodyMeasurements.Instance != null)
+        {
+            BodyMeasurements.Instance.LoadMeasurements();
+        }
+        else
+        {
+            Debug.LogError("BodyMeasurements Instance가 없습니다. BodyMeasurements를 씬에 추가해주세요.");
+        }
     }
 
 
@@ -92,6 +108,74 @@ public class WardrobeManager : MonoBehaviour
         if (OutfitDataLoader.Instance != null)
         {
             OutfitDataLoader.Instance.OnOutfitsLoaded -= OnOutfitsLoadedFromJson;
+        }
+        
+        if (BodyMeasurements.Instance != null)
+        {
+            BodyMeasurements.Instance.OnMeasurementsLoaded -= OnBodyMeasurementsLoaded;
+        }
+    }
+
+    private void OnBodyMeasurementsLoaded(BodyMeasurementData measurements)
+    {
+        Debug.Log("신체 측정 데이터가 로드되었습니다. UMA 아바타에 적용합니다.");
+        ApplyBodyMeasurementsToAvatar();
+    }
+
+    /// <summary>
+    /// 로드된 신체 측정 데이터를 UMA 아바타의 DNA에 적용
+    /// </summary>
+    public void ApplyBodyMeasurementsToAvatar()
+    {
+        if (avatar == null)
+        {
+            Debug.LogError("UMA 아바타를 찾을 수 없습니다!");
+            return;
+        }
+
+        if (BodyMeasurements.Instance == null)
+        {
+            Debug.LogError("BodyMeasurements Instance가 없습니다!");
+            return;
+        }
+
+        var dnaValues = BodyMeasurements.Instance.GetUMADNAValues();
+        if (dnaValues == null)
+        {
+            Debug.LogError("UMA DNA 값을 가져올 수 없습니다!");
+            return;
+        }
+
+        // UMA 아바타의 DNA 설정
+        try
+        {
+            // Height -> other의 Height (소문자 'height'가 정확한 DNA 이름)
+            if (dnaValues.ContainsKey("height"))
+                avatar.SetDNA("height", dnaValues["height"]);
+
+            // shoulder_width -> Arm의 Width  
+            if (dnaValues.ContainsKey("ArmWidth"))
+                avatar.SetDNA("armWidth", dnaValues["ArmWidth"]);
+
+            // chest -> Breast의 Size
+            if (dnaValues.ContainsKey("BreastSize"))
+                avatar.SetDNA("breastSize", dnaValues["BreastSize"]);
+
+            // waist -> other의 Waist
+            if (dnaValues.ContainsKey("Waist"))
+                avatar.SetDNA("waist", dnaValues["Waist"]);
+
+            // hip -> Gluteus의 Size
+            if (dnaValues.ContainsKey("GluteusSize"))
+                avatar.SetDNA("gluteusSize", dnaValues["GluteusSize"]);
+
+            // 아바타 리빌드
+            avatar.BuildCharacter();
+            Debug.Log("UMA 아바타에 신체 측정 데이터 적용 완료!");
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"UMA DNA 적용 중 오류 발생: {e.Message}");
         }
     }
 

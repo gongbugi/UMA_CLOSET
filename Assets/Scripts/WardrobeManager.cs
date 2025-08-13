@@ -29,6 +29,15 @@ public class WardrobeManager : MonoBehaviour
     [Header("Action Buttons")]
     public Button unequipAllButton; // 옷 전체 해제 버튼
 
+    [Header("Background UI")]
+    public Button backgroundButton; // 배경 카테고리 버튼
+    public GameObject backgroundPanel; // 배경 버튼들을 담는 패널
+    public Button[] backgroundSelectButtons = new Button[3]; // 배경 선택 버튼들
+
+    [Header("Animation UI")]
+    public GameObject animationPanel; // 애니메이션 버튼들을 담는 패널
+    public Button[] animationSelectButtons = new Button[3]; // 애니메이션 선택 버튼들 (기본, 걷기, 뛰기)
+
     [Header("Button Colors")]
     public Color selectedColor = new Color(1f, 0.9f, 0.6f); // Light Orange
     public Color normalColor = Color.white;
@@ -70,6 +79,9 @@ public class WardrobeManager : MonoBehaviour
         topsButton.onClick.AddListener(OnTopsCategorySelected);
         bottomsButton.onClick.AddListener(OnBottomsCategorySelected);
         unequipAllButton.onClick.AddListener(UnequipAllOutfits);
+
+        // 배경 관련 초기화
+        InitializeBackgroundUI();
 
         // JSON 데이터 로드 시작
         if (OutfitDataLoader.Instance != null)
@@ -416,5 +428,170 @@ public class WardrobeManager : MonoBehaviour
             Debug.Log($"{type} 카테고리 의상을 해제했습니다.");
         }
     }
+
+    #region 배경 관련 메서드들
+
+    /// <summary>
+    /// 배경 UI 초기화
+    /// </summary>
+    void InitializeBackgroundUI()
+    {
+        // 배경 패널 초기 비활성화
+        if (backgroundPanel != null)
+        {
+            backgroundPanel.SetActive(false);
+        }
+        // 애니메이션 패널 초기 비활성화
+        if (animationPanel != null)
+        {
+            animationPanel.SetActive(false);
+        }
+
+        // 배경 카테고리 버튼 이벤트 설정
+        if (backgroundButton != null)
+        {
+            backgroundButton.onClick.AddListener(OnBackgroundCategorySelected);
+        }
+
+        // 각 배경 선택 버튼 이벤트 설정
+        for (int i = 0; i < backgroundSelectButtons.Length; i++)
+        {
+            if (backgroundSelectButtons[i] != null)
+            {
+                int index = i; // 클로저 문제 방지
+                backgroundSelectButtons[i].onClick.AddListener(() => OnBackgroundSelected(index));
+            }
+        }
+
+        // 각 애니메이션 선택 버튼 이벤트 설정
+        for (int i = 0; i < animationSelectButtons.Length; i++)
+        {
+            if (animationSelectButtons[i] != null)
+            {
+                int index = i; // 클로저 문제 방지
+                animationSelectButtons[i].onClick.AddListener(() => OnAnimationSelected(index));
+            }
+        }
+
+        // 현재 선택된 배경에 맞춰 버튼 색상 업데이트
+        UpdateBackgroundButtonColors();
+        // 현재 선택된 애니메이션에 맞춰 버튼 색상 업데이트
+        UpdateAnimationButtonColors();
+    }
+
+    /// <summary>
+    /// 배경 카테고리 버튼 클릭 시 호출
+    /// </summary>
+    void OnBackgroundCategorySelected()
+    {   
+        // 배경, 애니메이션 패널 활성화/비활성화 토글
+        bool isActive = !backgroundPanel.activeSelf;
+        backgroundPanel.SetActive(isActive);
+        animationPanel.SetActive(isActive);
+
+        // 메인 카테고리 버튼 색상 업데이트
+        UpdateMainCategoryButtonColors(backgroundButton);
+
+        Debug.Log($"배경 카테고리 선택됨. 패널 활성화: {isActive}");
+    }
+
+    /// <summary>
+    /// 특정 배경 선택 시 호출
+    /// </summary>
+    void OnBackgroundSelected(int backgroundIndex)
+    {
+        if (BackgroundManager.Instance != null)
+        {
+            BackgroundManager.Instance.SwitchBackground(backgroundIndex);
+            UpdateBackgroundButtonColors();
+            Debug.Log($"배경 {backgroundIndex} 선택됨");
+        }
+        else
+        {
+            Debug.LogError("BackgroundManager Instance를 찾을 수 없습니다!");
+        }
+    }
+
+    /// <summary>
+    /// 배경 버튼 색상 업데이트
+    /// </summary>
+    void UpdateBackgroundButtonColors()
+    {
+        if (BackgroundManager.Instance == null) return;
+
+        int currentBg = BackgroundManager.Instance.GetCurrentBackgroundIndex();
+
+        for (int i = 0; i < backgroundSelectButtons.Length; i++)
+        {
+            if (backgroundSelectButtons[i] != null)
+            {
+                var colors = backgroundSelectButtons[i].colors;
+                colors.normalColor = (i == currentBg) ? selectedColor : normalColor;
+                backgroundSelectButtons[i].colors = colors;
+            }
+        }
+    }
+
+    /// <summary>
+    /// 메인 카테고리 버튼 색상 업데이트
+    /// </summary>
+    void UpdateMainCategoryButtonColors(Button selectedButton)
+    {
+        // 기존 선택된 버튼 색상 복구
+        if (currentSelectedMainButton != null)
+        {
+            var colors = currentSelectedMainButton.colors;
+            colors.normalColor = normalColor;
+            currentSelectedMainButton.colors = colors;
+        }
+
+        // 새로 선택된 버튼 색상 변경
+        if (selectedButton != null)
+        {
+            var colors = selectedButton.colors;
+            colors.normalColor = selectedColor;
+            selectedButton.colors = colors;
+            currentSelectedMainButton = selectedButton;
+        }
+    }
+
+    /// <summary>
+    /// 특정 애니메이션 선택 시 호출
+    /// </summary>
+    void OnAnimationSelected(int animationIndex)
+    {
+        if (AnimationManager.Instance != null)
+        {
+            AnimationManager.Instance.SetAnimation(animationIndex);
+            UpdateAnimationButtonColors();
+            Debug.Log($"애니메이션 {animationIndex} 선택됨");
+        }
+        else
+        {
+            Debug.LogError("AnimationManager Instance를 찾을 수 없습니다!");
+        }
+    }
+
+    /// <summary>
+    /// 애니메이션 버튼 색상 업데이트
+    /// </summary>
+    void UpdateAnimationButtonColors()
+    {
+        if (AnimationManager.Instance == null) return;
+
+        int currentAnimation = AnimationManager.Instance.GetCurrentAnimationIndex();
+
+        for (int i = 0; i < animationSelectButtons.Length; i++)
+        {
+            if (animationSelectButtons[i] != null)
+            {
+                var colors = animationSelectButtons[i].colors;
+                colors.normalColor = (i == currentAnimation) ? selectedColor : normalColor;
+                animationSelectButtons[i].colors = colors;
+            }
+        }
+    }
+
+    #endregion
 
 }

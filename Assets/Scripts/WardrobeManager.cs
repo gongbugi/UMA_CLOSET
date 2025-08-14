@@ -161,25 +161,33 @@ public class WardrobeManager : MonoBehaviour
         // UMA 아바타의 DNA 설정
         try
         {
-            // Height -> other의 Height (소문자 'height'가 정확한 DNA 이름)
+            // uma_height -> other의 Height (소문자 'height'가 정확한 DNA 이름)
             if (dnaValues.ContainsKey("height"))
                 avatar.SetDNA("height", dnaValues["height"]);
 
-            // shoulder_width -> Arm의 Width  
+            // uma_width -> Arm의 Width (기존 shoulder_width)
             if (dnaValues.ContainsKey("ArmWidth"))
                 avatar.SetDNA("armWidth", dnaValues["ArmWidth"]);
 
-            // chest -> Breast의 Size
-            if (dnaValues.ContainsKey("BreastSize"))
-                avatar.SetDNA("breastSize", dnaValues["BreastSize"]);
-
-            // waist -> other의 Waist
+            // uma_waist -> other의 Waist
             if (dnaValues.ContainsKey("Waist"))
                 avatar.SetDNA("waist", dnaValues["Waist"]);
 
-            // hip -> Gluteus의 Size
-            if (dnaValues.ContainsKey("GluteusSize"))
-                avatar.SetDNA("gluteusSize", dnaValues["GluteusSize"]);
+            // uma_belly -> other의 Belly
+            if (dnaValues.ContainsKey("Belly"))
+                avatar.SetDNA("belly", dnaValues["Belly"]);
+
+            // uma_fore_arm -> Forearm의 Length
+            if (dnaValues.ContainsKey("ForearmLength"))
+                avatar.SetDNA("forearmLength", dnaValues["ForearmLength"]);
+
+            // uma_arm -> Arm의 Length
+            if (dnaValues.ContainsKey("ArmLength"))
+                avatar.SetDNA("armLength", dnaValues["ArmLength"]);
+
+            // uma_legs -> Legs의 Size
+            if (dnaValues.ContainsKey("LegsSize"))
+                avatar.SetDNA("legsSize", dnaValues["LegsSize"]);
 
             // 아바타 리빌드
             avatar.BuildCharacter();

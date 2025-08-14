@@ -7,11 +7,13 @@ using UnityEngine.Networking;
 [Serializable]
 public class BodyMeasurementData
 {
-    public float height;
-    public float shoulder_width;
-    public float chest;
-    public float waist;
-    public float hip;
+    public float uma_height;
+    public float uma_belly;
+    public float uma_waist;
+    public float uma_width;
+    public float uma_fore_arm;
+    public float uma_arm;
+    public float uma_legs;
 }
 
 public class BodyMeasurements : MonoBehaviour
@@ -97,7 +99,7 @@ public class BodyMeasurements : MonoBehaviour
         {
             currentMeasurements = JsonUtility.FromJson<BodyMeasurementData>(jsonContent);
             Debug.Log("신체 측정 데이터 로드 완료");
-            Debug.Log($"Height: {currentMeasurements.height}, Chest: {currentMeasurements.chest}, Waist: {currentMeasurements.waist}");
+            Debug.Log($"Height: {currentMeasurements.uma_height}, Belly: {currentMeasurements.uma_belly}, Waist: {currentMeasurements.uma_waist}");
             
             OnMeasurementsLoaded?.Invoke(currentMeasurements);
         }
@@ -121,20 +123,26 @@ public class BodyMeasurements : MonoBehaviour
 
         Dictionary<string, float> dnaValues = new Dictionary<string, float>();
         
-        // height -> other의 Height
-        dnaValues["height"] = currentMeasurements.height;
+        // uma_height -> other의 Height
+        dnaValues["height"] = currentMeasurements.uma_height;
         
-        // shoulder_width -> Arm의 Width
-        dnaValues["ArmWidth"] = currentMeasurements.shoulder_width;
+        // uma_width -> Arm의 Width (기존 shoulder_width)
+        dnaValues["ArmWidth"] = currentMeasurements.uma_width;
         
-        // chest -> Breast의 Size
-        dnaValues["BreastSize"] = currentMeasurements.chest;
+        // uma_waist -> other의 Waist
+        dnaValues["Waist"] = currentMeasurements.uma_waist;
         
-        // waist -> other의 Waist
-        dnaValues["Waist"] = currentMeasurements.waist;
+        // uma_belly -> other의 Belly
+        dnaValues["Belly"] = currentMeasurements.uma_belly;
         
-        // hip -> Gluteus의 Size
-        dnaValues["GluteusSize"] = currentMeasurements.hip;
+        // uma_fore_arm -> Forearm의 Length
+        dnaValues["ForearmLength"] = currentMeasurements.uma_fore_arm;
+        
+        // uma_arm -> Arm의 Length
+        dnaValues["ArmLength"] = currentMeasurements.uma_arm;
+        
+        // uma_legs -> Legs의 Size
+        dnaValues["LegsSize"] = currentMeasurements.uma_legs;
 
         Debug.Log("UMA DNA 값 변환 완료:");
         foreach (var kvp in dnaValues)

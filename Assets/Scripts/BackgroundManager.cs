@@ -10,6 +10,10 @@ public class BackgroundManager : MonoBehaviour
     [Tooltip("각 배경의 이름 (UI 표시용)")]
     public string[] backgroundNames = { "기본 배경", "배경 1", "배경 2" };
     
+    [Header("라이팅 설정")]
+    [Tooltip("Directional Light 컴포넌트를 할당하세요")]
+    public Light directionalLight;
+    
     private int currentBackgroundIndex = 0; // 현재 활성화된 배경 인덱스
     
     // 싱글톤 패턴
@@ -49,6 +53,28 @@ public class BackgroundManager : MonoBehaviour
         
         currentBackgroundIndex = 0;
         Debug.Log($"배경 초기화 완료. 현재 배경: {backgroundNames[currentBackgroundIndex]}");
+        
+        // 초기 라이트 설정
+        UpdateDirectionalLight(currentBackgroundIndex);
+    }
+    
+    /// <summary>
+    /// Directional Light 활성화/비활성화 업데이트
+    /// </summary>
+    /// <param name="backgroundIndex">배경 인덱스</param>
+    void UpdateDirectionalLight(int backgroundIndex)
+    {
+        if (directionalLight == null)
+        {
+            Debug.LogWarning("Directional Light가 할당되지 않았습니다.");
+            return;
+        }
+        
+        // 배경1(인덱스 1)일 때만 비활성화, 나머지는 활성화
+        bool shouldBeActive = (backgroundIndex != 1);
+        directionalLight.enabled = shouldBeActive;
+        
+        Debug.Log($"Directional Light {(shouldBeActive ? "활성화" : "비활성화")} (배경: {backgroundNames[backgroundIndex]})");
     }
     
     /// <summary>
@@ -87,6 +113,9 @@ public class BackgroundManager : MonoBehaviour
         
         // 현재 배경 인덱스 업데이트
         currentBackgroundIndex = newBackgroundIndex;
+        
+        // Directional Light 활성화/비활성화 업데이트
+        UpdateDirectionalLight(currentBackgroundIndex);
         
         Debug.Log($"배경 전환 완료: {backgroundNames[currentBackgroundIndex]}");
     }

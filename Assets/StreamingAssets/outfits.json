@@ -17,10 +17,26 @@
       "thumbnailUrl": ""
     },
     {
+      "id": "shirt_002",
+      "outfitName": "셔츠",
+      "type": "Top",
+      "topCategory": "Shirt",
+      "texturePath": "Shirt_001",
+      "thumbnailUrl": ""
+    },
+    {
+      "id": "shorts_001",
+      "outfitName": "반바지",
+      "type": "Bottom",
+      "bottomCategory": "Shorts",
+      "texturePath": "",
+      "thumbnailUrl": "https://example.com/thumbnails/shorts1.jpg"
+    },
+    {
       "id": "pants_001",
       "outfitName": "바지",
       "type": "Bottom",
-      "bottomCategory": "Shorts",
+      "bottomCategory": "Pants",
       "texturePath": "",
       "thumbnailUrl": "https://example.com/thumbnails/pants1.jpg"
     }

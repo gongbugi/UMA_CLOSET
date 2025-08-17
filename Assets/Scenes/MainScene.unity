@@ -3202,8 +3202,6 @@ MonoBehaviour:
   - {fileID: 1610489305}
   - {fileID: 2018938406}
   - {fileID: 255451206}
-  selectedColor: {r: 0, g: 0, b: 0, a: 0.5882353}
-  normalColor: {r: 0, g: 0, b: 0, a: 0.29411766}
 --- !u!4 &1018976861
 Transform:
   m_ObjectHideFlags: 0
@@ -6554,6 +6552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2054768240}
   - component: {fileID: 2054768239}
+  - component: {fileID: 2054768241}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -6597,6 +6596,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2054768241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2054768238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47e2038c08e1d0c4fae42abd57a6a5e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightTheme:
+    textColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+    panelColor: {r: 0, g: 0, b: 0, a: 0.29411766}
+    buttonNormalColor: {r: 0, g: 0, b: 0, a: 0.29411766}
+    buttonHighlightedColor: {r: 0, g: 0, b: 0, a: 0.39215687}
+    buttonPressedColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    buttonSelectedColor: {r: 0.7, g: 0.7, b: 0.7, a: 1}
+    categorySelectedColor: {r: 0.7058824, g: 0.7058824, b: 0.7058824, a: 1}
+  darkTheme:
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    panelColor: {r: 1, g: 1, b: 1, a: 0.19607843}
+    buttonNormalColor: {r: 1, g: 1, b: 1, a: 0.39215687}
+    buttonHighlightedColor: {r: 1, g: 1, b: 1, a: 0.19607843}
+    buttonPressedColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+    buttonSelectedColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+    categorySelectedColor: {r: 1, g: 1, b: 1, a: 0.78431374}
+  textComponents: []
+  panelImages: []
+  excludedPanelNames:
+  - AnimationPanel
+  - BackgroundPanel
+  buttonComponents: []
 --- !u!1 &2095050386
 GameObject:
   m_ObjectHideFlags: 0

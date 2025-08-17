@@ -56,6 +56,12 @@ public class BackgroundManager : MonoBehaviour
         
         // 초기 라이트 설정
         UpdateDirectionalLight(currentBackgroundIndex);
+        
+        // 초기 UI 테마 설정
+        if (UIThemeManager.Instance != null)
+        {
+            UIThemeManager.Instance.ApplyThemeForBackground(currentBackgroundIndex);
+        }
     }
     
     /// <summary>
@@ -116,6 +122,19 @@ public class BackgroundManager : MonoBehaviour
         
         // Directional Light 활성화/비활성화 업데이트
         UpdateDirectionalLight(currentBackgroundIndex);
+        
+        // UI 테마 업데이트
+        if (UIThemeManager.Instance != null)
+        {
+            UIThemeManager.Instance.ApplyThemeForBackground(currentBackgroundIndex);
+        }
+        
+        // WardrobeManager의 버튼 색상도 업데이트
+        WardrobeManager wardrobeManager = FindFirstObjectByType<WardrobeManager>();
+        if (wardrobeManager != null)
+        {
+            wardrobeManager.UpdateAllButtonColorsForTheme();
+        }
         
         Debug.Log($"배경 전환 완료: {backgroundNames[currentBackgroundIndex]}");
     }

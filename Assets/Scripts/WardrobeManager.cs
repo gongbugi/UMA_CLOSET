@@ -38,9 +38,6 @@ public class WardrobeManager : MonoBehaviour
     public GameObject animationPanel; // 애니메이션 버튼들을 담는 패널
     public Button[] animationSelectButtons = new Button[3]; // 애니메이션 선택 버튼들 (기본, 걷기, 뛰기)
 
-    [Header("Button Colors")]
-    public Color selectedColor = new Color(1f, 0.9f, 0.6f); // Light Orange
-    public Color normalColor = Color.white;
 
     private Button currentSelectedMainButton;
     private Button currentSelectedSubButton;
@@ -203,11 +200,12 @@ public class WardrobeManager : MonoBehaviour
     {
         if (currentSelectedMainButton == selectedButton) return;
 
-        if (currentSelectedMainButton != null)
+        // UIThemeManager를 통해 버튼 선택 상태 관리
+        if (UIThemeManager.Instance != null)
         {
-            currentSelectedMainButton.GetComponent<Image>().color = normalColor;
+            UIThemeManager.Instance.SetMainCategoryButtonSelected(selectedButton);
         }
-        selectedButton.GetComponent<Image>().color = selectedColor;
+        
         currentSelectedMainButton = selectedButton;
 
         if (selectedButton == topsButton)
@@ -228,20 +226,13 @@ public class WardrobeManager : MonoBehaviour
     {
         if (currentSelectedSubButton == selectedButton) return;
 
-        if (currentSelectedSubButton != null)
+        // UIThemeManager를 통해 버튼 선택 상태 관리
+        if (UIThemeManager.Instance != null)
         {
-            currentSelectedSubButton.GetComponent<Image>().color = normalColor;
+            UIThemeManager.Instance.SetSubCategoryButtonSelected(selectedButton);
         }
-
-        if (selectedButton != null)
-        {
-            selectedButton.GetComponent<Image>().color = selectedColor;
-            currentSelectedSubButton = selectedButton;
-        }
-        else
-        {
-            currentSelectedSubButton = null;
-        }
+        
+        currentSelectedSubButton = selectedButton;
     }
 
     private void ClearWardrobeUI()
@@ -525,19 +516,13 @@ public class WardrobeManager : MonoBehaviour
     /// </summary>
     void UpdateBackgroundButtonColors()
     {
-        if (BackgroundManager.Instance == null) return;
+        if (BackgroundManager.Instance == null || UIThemeManager.Instance == null) return;
 
         int currentBg = BackgroundManager.Instance.GetCurrentBackgroundIndex();
-
-        for (int i = 0; i < backgroundSelectButtons.Length; i++)
-        {
-            if (backgroundSelectButtons[i] != null)
-            {
-                var colors = backgroundSelectButtons[i].colors;
-                colors.normalColor = (i == currentBg) ? selectedColor : normalColor;
-                backgroundSelectButtons[i].colors = colors;
-            }
-        }
+        Button selectedButton = (currentBg < backgroundSelectButtons.Length) ? backgroundSelectButtons[currentBg] : null;
+        
+        // UIThemeManager를 통해 배경 버튼 선택 상태 관리
+        UIThemeManager.Instance.SetBackgroundButtonSelected(selectedButton, backgroundSelectButtons);
     }
 
     /// <summary>
@@ -545,22 +530,13 @@ public class WardrobeManager : MonoBehaviour
     /// </summary>
     void UpdateMainCategoryButtonColors(Button selectedButton)
     {
-        // 기존 선택된 버튼 색상 복구
-        if (currentSelectedMainButton != null)
+        // UIThemeManager를 통해 버튼 선택 상태 관리
+        if (UIThemeManager.Instance != null)
         {
-            var colors = currentSelectedMainButton.colors;
-            colors.normalColor = normalColor;
-            currentSelectedMainButton.colors = colors;
+            UIThemeManager.Instance.SetMainCategoryButtonSelected(selectedButton);
         }
-
-        // 새로 선택된 버튼 색상 변경
-        if (selectedButton != null)
-        {
-            var colors = selectedButton.colors;
-            colors.normalColor = selectedColor;
-            selectedButton.colors = colors;
-            currentSelectedMainButton = selectedButton;
-        }
+        
+        currentSelectedMainButton = selectedButton;
     }
 
     /// <summary>
@@ -585,21 +561,27 @@ public class WardrobeManager : MonoBehaviour
     /// </summary>
     void UpdateAnimationButtonColors()
     {
-        if (AnimationManager.Instance == null) return;
+        if (AnimationManager.Instance == null || UIThemeManager.Instance == null) return;
 
         int currentAnimation = AnimationManager.Instance.GetCurrentAnimationIndex();
-
-        for (int i = 0; i < animationSelectButtons.Length; i++)
-        {
-            if (animationSelectButtons[i] != null)
-            {
-                var colors = animationSelectButtons[i].colors;
-                colors.normalColor = (i == currentAnimation) ? selectedColor : normalColor;
-                animationSelectButtons[i].colors = colors;
-            }
-        }
+        Button selectedButton = (currentAnimation < animationSelectButtons.Length) ? animationSelectButtons[currentAnimation] : null;
+        
+        // UIThemeManager를 통해 애니메이션 버튼 선택 상태 관리
+        UIThemeManager.Instance.SetAnimationButtonSelected(selectedButton, animationSelectButtons);
     }
 
     #endregion
+    
+    /// <summary>
+    /// 배경/테마 변경 시 모든 버튼 색상을 업데이트
+    /// </summary>
+    public void UpdateAllButtonColorsForTheme()
+    {
+        UpdateBackgroundButtonColors();
+        UpdateAnimationButtonColors();
+        
+        // UIThemeManager가 이미 선택된 버튼들의 색상을 업데이트하므로 
+        // 여기서는 추가 작업이 필요없음
+    }
 
 }

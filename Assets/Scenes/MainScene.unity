@@ -281,9 +281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a7b37c92d46754e93a6f02d72f9b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFileName: outfits.json
-  useLocalFile: 1
-  serverUrl: https://yourserver.com/api/outfits
+  jsonFileName: 
+  useLocalFile: 0
+  serverUrl: http://15.165.129.131:3000/api/cloth/outfits
 --- !u!4 &52575637
 Transform:
   m_ObjectHideFlags: 0
@@ -2941,9 +2941,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd04fbf7d1d1d694bac5f5f058cb8426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFileName: body_measurements.json
-  useLocalFile: 1
-  serverUrl: https://yourserver.com/api/measurements
+  jsonFileName: 
+  useLocalFile: 0
+  serverUrl: http://15.165.129.131:3000/api/mannequin/showMannequin
 --- !u!4 &949257498
 Transform:
   m_ObjectHideFlags: 0

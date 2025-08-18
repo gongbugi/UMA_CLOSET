@@ -8,6 +8,7 @@ using UMA;
 using UMA.CharacterSystem;
 using UnityEngine.Networking;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 public class WardrobeManager : MonoBehaviour
 {
@@ -48,6 +49,12 @@ public class WardrobeManager : MonoBehaviour
     
     // HTTP 텍스처 캐싱
     private Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
+    private string authToken = "";
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern string GetTokenFromLocalStorage();
+#endif
 
     void Awake()
     {
@@ -85,6 +92,9 @@ public class WardrobeManager : MonoBehaviour
         // 배경 관련 초기화
         InitializeBackgroundUI();
 
+        // LocalStorage에서 토큰 추출
+        ExtractTokenFromLocalStorage();
+        
         // JSON 데이터 로드 시작
         if (OutfitDataLoader.Instance != null)
         {
@@ -430,6 +440,13 @@ public class WardrobeManager : MonoBehaviour
         }
 
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        
+        // 토큰이 있으면 Authorization 헤더에 추가
+        if (!string.IsNullOrEmpty(authToken))
+        {
+            request.SetRequestHeader("Authorization", "Bearer " + authToken);
+        }
+        
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -667,6 +684,52 @@ public class WardrobeManager : MonoBehaviour
         
         // UIThemeManager가 이미 선택된 버튼들의 색상을 업데이트하므로 
         // 여기서는 추가 작업이 필요없음
+    }
+    
+    /// <summary>
+    /// LocalStorage에서 토큰 추출
+    /// </summary>
+    private void ExtractTokenFromLocalStorage()
+    {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        try
+        {
+            string token = GetTokenFromLocalStorage();
+            
+            if (!string.IsNullOrEmpty(token))
+            {
+                authToken = token;
+                Debug.Log("WardrobeManager: LocalStorage에서 토큰 추출 성공");
+            }
+            else
+            {
+                // LocalStorage에 토큰이 없으면 PlayerPrefs에서 시도
+                authToken = PlayerPrefs.GetString("AuthToken", "");
+                if (!string.IsNullOrEmpty(authToken))
+                {
+                    Debug.Log("WardrobeManager: PlayerPrefs에서 저장된 토큰 사용");
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("WardrobeManager: LocalStorage에서 토큰 추출 중 오류: " + e.Message);
+            // 오류 시 저장된 토큰 시도
+            authToken = PlayerPrefs.GetString("AuthToken", "");
+        }
+#else
+        // 에디터나 다른 플랫폼에서는 저장된 토큰 사용
+        authToken = PlayerPrefs.GetString("AuthToken", "");
+        Debug.Log("WardrobeManager: 에디터 모드: 저장된 토큰 사용");
+#endif
+    }
+    
+    /// <summary>
+    /// 현재 토큰 상태 확인
+    /// </summary>
+    public string GetCurrentToken()
+    {
+        return authToken;
     }
 
 }

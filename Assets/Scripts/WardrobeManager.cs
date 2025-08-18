@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UMA;
 using UMA.CharacterSystem;
+using UnityEngine.Networking;
+using System.Collections;
 
 public class WardrobeManager : MonoBehaviour
 {
@@ -43,6 +45,9 @@ public class WardrobeManager : MonoBehaviour
     private Button currentSelectedSubButton;
     private List<OutfitData> currentFilteredList;
     private UMA.CharacterSystem.DynamicCharacterAvatar avatar;
+    
+    // HTTP 텍스처 캐싱
+    private Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
 
     void Awake()
     {
@@ -317,21 +322,39 @@ public class WardrobeManager : MonoBehaviour
         // 2. 레시피의 텍스처를 교체
         if (!string.IsNullOrEmpty(selectedOutfit.texturePath))
         {
-            // WebGL에서는 서버에서 텍스처 로드
-            var texture = Resources.Load<Texture2D>(selectedOutfit.texturePath);
-            if (texture != null)
+            // HTTP URL인지 확인
+            if (selectedOutfit.texturePath.StartsWith("http"))
             {
-                ApplyTextureToRecipe(recipe, overlayPath, texture);
+                // HTTP에서 텍스처 로드
+                StartCoroutine(LoadTextureFromHTTP(selectedOutfit.texturePath, recipe, overlayPath));
+            }
+            // 절대 경로인지 확인 (Windows: C:\, D:\ / Unix: /)
+            else if (System.IO.Path.IsPathRooted(selectedOutfit.texturePath))
+            {
+                // 로컬 파일에서 텍스처 로드
+                StartCoroutine(LoadTextureFromFile(selectedOutfit.texturePath, recipe, overlayPath));
             }
             else
             {
-                Debug.LogError($"텍스처 로드 실패: {selectedOutfit.texturePath}");
+                // Resources에서 텍스처 로드 (기존 방식)
+                var texture = Resources.Load<Texture2D>(selectedOutfit.texturePath);
+                if (texture != null)
+                {
+                    ApplyTextureToRecipe(recipe, overlayPath, texture);
+                }
+                else
+                {
+                    Debug.LogError($"텍스처 로드 실패: {selectedOutfit.texturePath}");
+                }
             }
         }
 
-        // 3. 최종적으로 수정이 완료된 레시피를 아바타에 적용하고 빌드
-        avatar.BuildCharacter();
-        Debug.Log($"'{selectedOutfit.outfitName}' 착용 완료!");
+        // 3. Resources 텍스처인 경우에만 즉시 빌드 (HTTP/로컬 파일은 코루틴에서 빌드)
+        if (!selectedOutfit.texturePath.StartsWith("http") && !System.IO.Path.IsPathRooted(selectedOutfit.texturePath))
+        {
+            avatar.BuildCharacter();
+        }
+        Debug.Log($"'{selectedOutfit.outfitName}' 착용 시작!");
     }
 
 
@@ -393,6 +416,68 @@ public class WardrobeManager : MonoBehaviour
             return "Custom/Shorts_Overlay";
         }
         return null; // 규칙에 맞는 레시피가 없는 경우
+    }
+
+    // HTTP에서 텍스처를 로드하는 코루틴
+    private IEnumerator LoadTextureFromHTTP(string url, UMAWardrobeRecipe recipe, string overlayPath)
+    {
+        // 캐시 확인
+        if (textureCache.ContainsKey(url))
+        {
+            ApplyTextureToRecipe(recipe, overlayPath, textureCache[url]);
+            avatar.BuildCharacter();
+            yield break;
+        }
+
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            textureCache[url] = texture; // 캐시에 저장
+            ApplyTextureToRecipe(recipe, overlayPath, texture);
+            avatar.BuildCharacter();
+            Debug.Log($"HTTP 텍스처 로드 성공: {url}");
+        }
+        else
+        {
+            Debug.LogError($"HTTP 텍스처 로드 실패: {url} - {request.error}");
+        }
+
+        request.Dispose();
+    }
+
+    // 로컬 파일에서 텍스처를 로드하는 코루틴
+    private IEnumerator LoadTextureFromFile(string filePath, UMAWardrobeRecipe recipe, string overlayPath)
+    {
+        // 캐시 확인
+        if (textureCache.ContainsKey(filePath))
+        {
+            ApplyTextureToRecipe(recipe, overlayPath, textureCache[filePath]);
+            avatar.BuildCharacter();
+            yield break;
+        }
+
+        // file:// 프로토콜 사용하여 로컬 파일 로드
+        string fileUrl = "file://" + filePath.Replace("\\", "/");
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(fileUrl);
+        yield return request.SendWebRequest();
+
+        if (request.result == UnityWebRequest.Result.Success)
+        {
+            Texture2D texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            textureCache[filePath] = texture; // 캐시에 저장
+            ApplyTextureToRecipe(recipe, overlayPath, texture);
+            avatar.BuildCharacter();
+            Debug.Log($"로컬 텍스처 로드 성공: {filePath}");
+        }
+        else
+        {
+            Debug.LogError($"로컬 텍스처 로드 실패: {filePath} - {request.error}");
+        }
+
+        request.Dispose();
     }
 
     public void UnequipAllOutfits()

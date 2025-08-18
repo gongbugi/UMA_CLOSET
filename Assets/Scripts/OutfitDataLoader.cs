@@ -161,24 +161,34 @@ public class OutfitDataLoader : MonoBehaviour
         return outfitData;
     }
 
-    private IEnumerator LoadThumbnail(string url, OutfitData outfitData)
+    private IEnumerator LoadThumbnail(string path, OutfitData outfitData)
     {
         // 이미 캐시된 이미지가 있는지 확인
-        if (thumbnailCache.ContainsKey(url))
+        if (thumbnailCache.ContainsKey(path))
         {
-            outfitData.thumbnail = thumbnailCache[url];
+            outfitData.thumbnail = thumbnailCache[path];
             yield break;
         }
 
-        // URL이 실제 이미지 URL이 아닌 경우 기본 처리
-        if (string.IsNullOrEmpty(url) || url.StartsWith("https://example.com"))
+        // 경로가 비어있거나 예시 URL인 경우 기본 처리
+        if (string.IsNullOrEmpty(path) || path.StartsWith("https://example.com"))
         {
-            // 임시로 기존 Resources의 이미지를 사용하거나 기본 이미지 생성
             outfitData.thumbnail = CreateDefaultThumbnail();
             yield break;
         }
 
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(url);
+        string fileUrl;
+        // 절대 경로인지 확인하여 file:// 프로토콜 추가
+        if (System.IO.Path.IsPathRooted(path))
+        {
+            fileUrl = "file://" + path.Replace("\\", "/");
+        }
+        else
+        {
+            fileUrl = path; // HTTP URL이거나 상대경로
+        }
+
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(fileUrl);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -187,11 +197,12 @@ public class OutfitDataLoader : MonoBehaviour
             Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
             
             outfitData.thumbnail = sprite;
-            thumbnailCache[url] = sprite;
+            thumbnailCache[path] = sprite;
+            Debug.Log($"썸네일 로드 성공: {path}");
         }
         else
         {
-            Debug.LogWarning($"썸네일 로드 실패: {url} - {request.error}");
+            Debug.LogWarning($"썸네일 로드 실패: {path} - {request.error}");
             outfitData.thumbnail = CreateDefaultThumbnail();
         }
 

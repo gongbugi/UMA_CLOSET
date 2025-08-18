@@ -281,7 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78a7b37c92d46754e93a6f02d72f9b93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFileName: 
+  jsonFileName: outfits.json
   useLocalFile: 0
   serverUrl: http://15.165.129.131:3000/api/cloth/outfits
 --- !u!4 &52575637
@@ -2941,7 +2941,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd04fbf7d1d1d694bac5f5f058cb8426, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jsonFileName: 
+  jsonFileName: body_measurements.json
   useLocalFile: 0
   serverUrl: http://15.165.129.131:3000/api/mannequin/showMannequin
 --- !u!4 &949257498
@@ -6442,7 +6442,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 5.028e-42, y: 2.524355e-29, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ForceVisible: 0

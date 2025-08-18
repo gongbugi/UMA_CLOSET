@@ -29,7 +29,7 @@ MonoBehaviour:
   suppressWardrobeSlots: []
   activeWardrobeSet: []
   MeshHideAssets:
-  - {fileID: 11400000, guid: 04afcfc410529b34f992c16d8c42dc5d, type: 2}
+  - {fileID: 11400000, guid: 878d736ae596d5a46bed4015fe60d4a1, type: 2}
   MeshModifiers: []
   OverrideDNA:
     PreloadValues: []

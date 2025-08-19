@@ -4,21 +4,21 @@
   <img src="./images/1.png" alt="ISECLOTH 메인 화면" width="800">
 </div>
 
+## Contents
+
+- 📖 Introduction
+- ✨ Features
+- 🖼️ Preview
+- 🛠️ Tech Stack
+- 🏗️ Structure
+- 📄 License
+
 ## 📖 Introduction
 이세옷은 사용자의 퍼스널 체형을 기반으로 한 3D 가상 피팅 서비스입니다. 자신의 신체 사이즈에 맞춰 생성된 아바타를 통해, 실제 옷을 입어보지 않고도 다양한 옷을 가상으로 피팅해볼 수 있는 새로운 경험을 제공합니다.
 
-## Contents
-
-- [📖 Introduction](#introduction)
-- [✨ Features](#features)
-- [🖼️ Preview](#preview)
-- [🛠️ Tech Stack](#tech-stack)
-- [🏗️ Structure](#structure)
-- [📄 License](#license)
-
 ## ✨ Features
 
-### 👤 퍼스널 체형 기반 아바타 생성
+### • 퍼스널 체형 기반 아바타 생성
 1. **전신 사진 업로드**: 한 장의 전신 사진 입력  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⬇️
 2. **SMPL 모델 추정**: AI 기반으로 정확한 체형 분석  
@@ -28,7 +28,7 @@
 4. **실시간 렌더링**: 즉시 확인 가능한 나만의 아바타
 <br>
 
-### 👕 3D 의류 생성 및 가상 피팅
+### • 3D 의류 생성 및 가상 피팅
 1. **의류 사진 분석**: 앞/뒤 사진으로 의류의 모든 디테일 캡처  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⬇️
 2. **자동 배경 제거**: U-2-Net 기반 정확한 의류 분리  
@@ -38,7 +38,7 @@
 4. **실시간 피팅**: 아바타에 즉시 적용되는 가상 착용 경험
 <br>
 
-### 🎮 인터랙티브 경험
+### • 인터랙티브 경험
 - **다양한 배경**: 여러 환경에서 의상 확인
 - **동적 모션**: 실제 움직임을 시뮬레이션한 아바타 애니메이션
 - **360도 뷰**: 모든 각도에서 의상 확인 가능

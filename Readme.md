@@ -19,11 +19,11 @@
 ## ✨ Features
 
 ### 👤 퍼스널 체형 기반 아바타 생성
-1. **전신 사진 업로드**: 단 한 장의 전신 사진으로 시작  
+1. **전신 사진 업로드**: 한 장의 전신 사진 입력
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⬇️
 2. **SMPL 모델 추정**: AI 기반으로 정확한 체형 분석  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⬇️
-3. **UMA 파라미터 변환**: 최적화된 3D 아바타 생성  
+3. **UMA 파라미터 변환**: 체형과 맞는 3D 아바타 생성  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⬇️
 4. **실시간 렌더링**: 즉시 확인 가능한 나만의 아바타
 <br>
@@ -55,7 +55,7 @@
 <img src="./images/3.png" alt="기본 옷장 화면" width="700">
 
 ### 아바타 피팅 데모
-<img src="./images/4.png" alt="다른 배경에서 상하의를 입고 뛰는 사진" width="600">
+<img src="./images/4.png" alt="다른 배경에서 상하의를 입고 뛰는 사진" width="700">
 
 </div>
 

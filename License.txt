@@ -91,6 +91,3 @@ DISCLAIMER
 
 본 소프트웨어는 기본 연구의 결과이며, "있는 그대로" 제공되며, 오류를 포함할 수 있습니다.
 본 소프트웨어의 사용은 전적으로 사용자의 책임입니다.
-
-For more information about licensing and commercial use, please contact:
-[프로젝트 담당자 이메일]

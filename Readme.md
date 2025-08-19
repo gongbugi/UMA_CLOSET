@@ -1,4 +1,4 @@
-# <img src="./images/main.png" alt="ISECLOTH 로고" width="300">이세옷 (이세계옷장)
+# <img src="./images/main.png" alt="ISECLOTH 로고" width="50">이세옷 (이세계옷장)
 
 <div align="center">
   <img src="./images/1.png" alt="ISECLOTH 메인 화면" width="800">
